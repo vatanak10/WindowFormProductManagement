@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,16 @@ namespace ProductManagement
             Application.Run(new frmProduct());
         }
     }
-    public class Product
+
+    public enum SortOptions
+    {
+        SortByID = 0,
+        SortByName = 1,
+        SortByPrice = 2,
+        SortByStock = 3,
+        SortByDate = 4
+    }
+    public class Product : IComparable
     {
         private string _id;
         private string _product_name;
@@ -66,6 +76,12 @@ namespace ProductManagement
             get { return _amount_in_stock; }
             set { _amount_in_stock = value; }
         }
+
+        public int CompareTo(object o)
+        {
+            Product temp = (Product)o;
+            return string.Compare(this.ProductName, temp.ProductName, StringComparison.Ordinal);
+        }
     }
 
     public class ProductManager
@@ -103,6 +119,12 @@ namespace ProductManagement
             }
 
         }
+
+        public void Sort(SortOptions SortType)
+        {
+            if (_product_list == null) { return; }
+            Array.Sort(_product_list, new ProductComparator(SortType));
+        }      
 
         public void Delete(Product Obj)
         {
@@ -224,8 +246,50 @@ namespace ProductManagement
         public Product[] GetProducts
         {
             get { return _product_list; }
+        }               
+    }
+
+    public class ProductComparator : IComparer
+    {
+        protected SortOptions _SortType = SortOptions.SortByPrice;
+
+        public ProductComparator(SortOptions SortBy)
+        {
+            _SortType = SortBy;
+
         }
 
-      
-    }    
+        public int Compare(object x, object y)
+        {
+            Product x1 = (Product)x;
+            Product x2 = (Product)y;
+
+            if (_SortType == SortOptions.SortByID)
+            {
+                return x1.ProductID.CompareTo(x2.ProductID);
+            }
+
+            if (_SortType == SortOptions.SortByName)
+            {
+                return string.Compare(x1.ProductName, x2.ProductName, StringComparison.Ordinal);
+            }
+
+            if (_SortType == SortOptions.SortByPrice)
+            {
+                return string.Compare(x1.ProductPrice.ToString(), x2.ProductPrice.ToString(), StringComparison.Ordinal);
+            }
+
+            if (_SortType == SortOptions.SortByStock)
+            {
+                return string.Compare(x1.ProductStockAmount.ToString(), x2.ProductStockAmount.ToString(), StringComparison.Ordinal);
+            }
+
+            if (_SortType == SortOptions.SortByDate)
+            {
+                return string.Compare(x1.ProductExpireDate.ToString(), x2.ProductExpireDate.ToString(), StringComparison.Ordinal);
+            }
+
+            return 0;
+        }
+    }
 }

@@ -82,6 +82,7 @@ namespace ProductManagement
             this.productView.Alignment = System.Windows.Forms.ListViewAlignment.Default;
             this.productView.AllowColumnReorder = true;
             this.productView.AllowDrop = true;
+            this.productView.AutoArrange = false;
             this.productView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
@@ -97,6 +98,7 @@ namespace ProductManagement
             this.productView.TabIndex = 2;
             this.productView.UseCompatibleStateImageBehavior = false;
             this.productView.View = System.Windows.Forms.View.Details;
+            this.productView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.productView_ColumnClick);
             this.productView.SelectedIndexChanged += new System.EventHandler(this.productView_SelectedIndexChanged);
             // 
             // columnHeader1
